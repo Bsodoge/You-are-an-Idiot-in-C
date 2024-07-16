@@ -9,7 +9,15 @@ struct Vector{
 } typedef vector;
 
 vector position = { 0 , 0 };
-vector velocity = { 1 , 1 };
+vector velocity = { -1 , 1 };
+
+void set_inital_pos(){
+    GdkScreen *screen = gdk_screen_get_default();
+    gint width = gdk_screen_get_width(screen);
+    gint height = gdk_screen_get_height(screen);
+    position.x = width/2;
+    position.y = height/2;
+}
 
 void detectEdge(gpointer ptr){
     gint currentWidth, currentHeight;
@@ -19,11 +27,9 @@ void detectEdge(gpointer ptr){
     gtk_window_get_size(ptr, &currentWidth, &currentHeight);
     if((position.x > width - currentWidth) ||  (position.x < 0)){
         velocity.x = -velocity.x;
-        system("( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.1s ; kill -9 $pid");
     }
     if((position.y > height - currentHeight) || (position.y < 0)){
         velocity.y = -velocity.y;
-        system("( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.1s ; kill -9 $pid");
     }
 }
 
@@ -41,6 +47,7 @@ void end_program(GtkWidget *wid, gpointer ptr){
 
 int main(int argc, char *argv[]){
     gtk_init(&argc, &argv);
+    set_inital_pos();
     GtkWidget *win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *btn = gtk_button_new_with_label("Press the button");
     GtkWidget *lbl = gtk_label_new("Hello world");
