@@ -10,6 +10,7 @@ struct Vector{
 
 vector position = { 0 , 0 };
 vector velocity = { -1 , 1 };
+int isWhite = 0;
 
 void set_inital_pos(){
     GdkScreen *screen = gdk_screen_get_default();
@@ -17,6 +18,18 @@ void set_inital_pos(){
     gint height = gdk_screen_get_height(screen);
     position.x = width/2;
     position.y = height/2;
+} 
+
+gint change_image(gpointer ptr){
+    gtk_image_clear(ptr);
+    if(isWhite == 0){
+        gtk_image_set_from_file(ptr, "white.svg");
+        isWhite = 1;
+    } else {
+        gtk_image_set_from_file(ptr, "black.svg");
+        isWhite = 0;
+    }
+    return 1;
 }
 
 void detectEdge(gpointer ptr){
@@ -45,20 +58,22 @@ void end_program(GtkWidget *wid, gpointer ptr){
     gtk_main_quit();
 }
 
+void on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data){ 
+    if(event->keyval == 65513 || event->keyval == 65514 || event->keyval == 65428 || event->keyval == 65507 || event->keyval == 65508 || event->keyval == 65535 || event->keyval == 65473){
+        gtk_main_quit();
+    }
+}
+
 int main(int argc, char *argv[]){
     gtk_init(&argc, &argv);
-    set_inital_pos();
+/*     set_inital_pos(); */
     GtkWidget *win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    GtkWidget *btn = gtk_button_new_with_label("Press the button");
-    GtkWidget *lbl = gtk_label_new("Hello world");
-    GtkWidget *box = gtk_vbox_new(FALSE, 5);
-    g_signal_connect(btn, "clicked", G_CALLBACK(end_program), win);
-    g_signal_connect(win, "delete_event", G_CALLBACK(end_program), NULL);
-    gtk_box_pack_start(GTK_BOX(box), lbl, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), btn, TRUE, TRUE, 0);
-    gtk_container_add(GTK_CONTAINER(win), box);
+    GtkWidget *img = gtk_image_new_from_file("black.svg");
+    g_signal_connect(win, "key_press_event" ,G_CALLBACK(on_key_press), NULL);
+    gtk_container_add(GTK_CONTAINER(win), img);
     gtk_widget_show_all(win);
     g_timeout_add(1, move_window, win);
+    g_timeout_add(400, change_image, img);
     gtk_main();
     return 0;
 }
