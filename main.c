@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <vlc/vlc.h>
 #include <time.h>
-//Build with gcc `pkg-config --cflags --libs gtk+-2.0` main.c -o gtktest
+//Build with below commands
 //gcc $(pkg-config --cflags gtk+-2.0) $(pkg-config --cflags libvlc) -c main.c -o gtktest
 //gcc gtktest -o test $(pkg-config --libs libvlc) $(pkg-config --cflags gtk+-2.0)
 
