@@ -94,7 +94,6 @@ int procreate(gpointer num){
     libvlc_media_player_t *mp = libvlc_media_player_new_from_media(m);
     libvlc_media_release(m);
     libvlc_media_player_play(mp);
-    printf("%d", *n);
     gtk_main();
     return 1;
 }
