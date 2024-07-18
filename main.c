@@ -24,6 +24,9 @@ struct Window{
     position.y = height/2;
 }  */
 
+int windowsToSpawn = 7;
+void on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer ptr);
+
 gint change_image(gpointer currentWindow){
     window *ptr = currentWindow;
     gtk_image_clear(ptr->img);
@@ -65,26 +68,36 @@ void end_program(GtkWidget *wid, gpointer ptr){
     gtk_main_quit();
 }
 
-/* void procreate(){
-    for (gint i = 0; i < 1; i++){
-        GtkWidget *win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        GtkWidget *img = gtk_image_new_from_file("black.svg");
-        gtk_container_add(GTK_CONTAINER(win), img);
-        gtk_widget_show_all(win);
-        g_timeout_add(1, move_window, win);
-        g_timeout_add(400, change_image, img);
+int procreate(gpointer num){
+    int *n = num;
+    if(*n == 1){
+        return 0;
     }
-} */
+    int n2 = --(*n);
+    n = &n2;
+    GtkWidget *win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *img = gtk_image_new_from_file("black.svg");
+    gtk_container_add(GTK_CONTAINER(win), img);
+    gtk_widget_show_all(win);
+    g_signal_connect(win, "key_press_event" ,G_CALLBACK(on_key_press), win);
+    window newWindow = {GTK_WINDOW(win), GTK_IMAGE(img), {0, 0}, {1, 1}, 0}; 
+    g_timeout_add(1, move_window, &newWindow);
+    g_timeout_add(400, change_image, &newWindow);
+    g_timeout_add(50, procreate, n);
+    printf("%d", *n);
+    gtk_main();
+    return 1;
+}
 
 void on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer ptr){ 
     if(event->keyval == 65513 || event->keyval == 65514 || event->keyval == 65428 || event->keyval == 65507 || event->keyval == 65508 || event->keyval == 65535 || event->keyval == 65473){
-/*         procreate(); */
         GtkWidget *dlg = gtk_dialog_new_with_buttons("Warning", GTK_WINDOW(ptr), GTK_DIALOG_DESTROY_WITH_PARENT, "Ok", 0, NULL);
         GtkWidget *lbl = gtk_label_new("You are an Idiot!");
         gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dlg))), lbl);
         gtk_widget_show_all(dlg);
         gtk_dialog_run(GTK_DIALOG(dlg));
         gtk_widget_destroy(dlg);
+        procreate(&windowsToSpawn); 
     }
 }
 
