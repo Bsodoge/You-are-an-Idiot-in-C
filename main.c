@@ -20,14 +20,6 @@ struct Window{
     gint isWhite;
 } typedef window;
 
-/* void set_inital_pos(){
-    GdkScreen *screen = gdk_screen_get_default();
-    gint width = gdk_screen_get_width(screen);
-    gint height = gdk_screen_get_height(screen);
-    position.x = width/2;
-    position.y = height/2;
-}  */
-
 int windowsToSpawn = 7;
 void on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer ptr);
 
@@ -124,7 +116,6 @@ void on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer ptr){
 
 int main(int argc, char *argv[]){
     gtk_init(&argc, &argv);
-/*     set_inital_pos(); */
     GtkWidget *win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *img = gtk_image_new_from_file("black.svg");
     g_signal_connect(win, "key_press_event" ,G_CALLBACK(on_key_press), win);
