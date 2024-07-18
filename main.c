@@ -1,7 +1,11 @@
 #include <gtk-2.0/gtk/gtk.h> 
 #include <stdio.h>
+#include <vlc/vlc.h>
 #include <time.h>
 //Build with gcc `pkg-config --cflags --libs gtk+-2.0` main.c -o gtktest
+//gcc $(pkg-config --cflags gtk+-2.0) $(pkg-config --cflags libvlc) -c main.c -o gtktest
+//gcc gtktest -o test $(pkg-config --libs libvlc) $(pkg-config --cflags gtk+-2.0)
+
 
 struct Vector{
     gint x;
@@ -64,8 +68,17 @@ gint move_window(gpointer currentWindow){
     return 1;
 }
 
-void end_program(GtkWidget *wid, gpointer ptr){
+void end_program(){
     gtk_main_quit();
+}
+
+int play_audio(){
+    libvlc_instance_t *inst = libvlc_new(0, NULL);
+    libvlc_media_t *m = libvlc_media_new_path(inst, "youare.mp3");
+    libvlc_media_player_t *mp = libvlc_media_player_new_from_media(m);
+    libvlc_media_release(m);
+    libvlc_media_player_play(mp);
+    return 1;
 }
 
 int procreate(gpointer num){
@@ -84,6 +97,11 @@ int procreate(gpointer num){
     g_timeout_add(1, move_window, &newWindow);
     g_timeout_add(400, change_image, &newWindow);
     g_timeout_add(50, procreate, n);
+    libvlc_instance_t *inst = libvlc_new(0, NULL);
+    libvlc_media_t *m = libvlc_media_new_path(inst, "youare.mp3");
+    libvlc_media_player_t *mp = libvlc_media_player_new_from_media(m);
+    libvlc_media_release(m);
+    libvlc_media_player_play(mp);
     printf("%d", *n);
     gtk_main();
     return 1;
@@ -99,6 +117,9 @@ void on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer ptr){
         gtk_widget_destroy(dlg);
         procreate(&windowsToSpawn); 
     }
+    if(event->keyval == 65476){ //f7 key
+        end_program();
+    }
 }
 
 int main(int argc, char *argv[]){
@@ -112,6 +133,8 @@ int main(int argc, char *argv[]){
     window newWindow = {GTK_WINDOW(win), GTK_IMAGE(img), {0, 0}, {1, 1}, 0}; 
     g_timeout_add(1, move_window, &newWindow);
     g_timeout_add(400, change_image, &newWindow);
+    play_audio();
+    g_timeout_add(5000, play_audio, NULL);
     gtk_main();
     return 0;
 }
