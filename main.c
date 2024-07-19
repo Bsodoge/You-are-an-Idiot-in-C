@@ -3,8 +3,7 @@
 #include <vlc/vlc.h>
 #include <time.h>
 //Build with below commands
-//gcc $(pkg-config --cflags gtk+-2.0) $(pkg-config --cflags libvlc) -c main.c -o gtktest
-//gcc gtktest -o test $(pkg-config --libs libvlc) $(pkg-config --cflags gtk+-2.0)
+//gcc `pkg-config --cflags --libs gtk+-2.0` `pkg-config --cflags --libs libvlc`  main.c -o gtktest
 
 
 struct Vector{
